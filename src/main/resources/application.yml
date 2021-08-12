@@ -1,0 +1,15 @@
+
+server:
+  port: 8081
+
+spring:
+  database:
+    data:
+      mongodb:
+        database: restaurante_db
+        port: 27017
+  cache:
+    type: redis
+  redis:
+    host: localhost
+    port: 6379
