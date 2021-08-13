@@ -9,8 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 import restaurante.gif.config.token.Token;
-import restaurante.gif.exceptions.errors.ApiError;
-import restaurante.gif.form.LoginForm;
+import restaurante.gif.config.form.LoginForm;
 import restaurante.gif.service.TokenService;
 
 import javax.validation.Valid;

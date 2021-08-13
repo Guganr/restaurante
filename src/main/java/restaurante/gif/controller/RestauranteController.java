@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import restaurante.gif.exceptions.RestauranteInexistenteException;
 import restaurante.gif.exceptions.errors.ApiError;
 import restaurante.gif.exceptions.CNPJInvalidoException;
 import restaurante.gif.exceptions.RestauranteCadastradoException;
@@ -43,8 +44,11 @@ public class RestauranteController {
 
     @RequestMapping("/{id}")
     public ResponseEntity<Restaurante> listaRestaurantePorId(@PathVariable String id) {
-        Optional<Restaurante> restaurante = restauranteService.listaRestaurantePorId(id);
-        return restaurante.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        try {
+            return new ResponseEntity(restauranteService.listaRestaurantePorId(id), HttpStatus.OK);
+        } catch (RestauranteInexistenteException exception) {
+            return new ResponseEntity(new ApiError(HttpStatus.CONFLICT, exception), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @RequestMapping("/cnpj/{cnpj}")
@@ -52,8 +56,8 @@ public class RestauranteController {
         try{
             return new ResponseEntity(restauranteService.listaRestaurantePorCnpj(cnpj), HttpStatus.OK);
         }
-        catch(CNPJInvalidoException cnpjInvalidoException ){
-            return new ResponseEntity(new ApiError(HttpStatus.CONFLICT, cnpjInvalidoException), HttpStatus.INTERNAL_SERVER_ERROR);
+        catch(CNPJInvalidoException | RestauranteInexistenteException exception ){
+            return new ResponseEntity(new ApiError(HttpStatus.CONFLICT, exception), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

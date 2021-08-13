@@ -1,4 +1,4 @@
-package restaurante.gif.form;
+package restaurante.gif.config.form;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 

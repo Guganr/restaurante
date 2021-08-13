@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import restaurante.gif.exceptions.CNPJInvalidoException;
 import restaurante.gif.exceptions.EmailInvalidoException;
 import restaurante.gif.exceptions.RestauranteCadastradoException;
+import restaurante.gif.exceptions.RestauranteInexistenteException;
 import restaurante.gif.model.Restaurante;
 import restaurante.gif.repository.RestauranteRepository;
 
@@ -48,8 +49,15 @@ public class RestauranteService {
             throw new EmailInvalidoException(email);
     }
 
-    public Optional<Restaurante> listaRestaurantePorId(String id) {
-        return restauranteRepository.findById(id);
+    public Optional<Restaurante> listaRestaurantePorId(String id) throws RestauranteInexistenteException {
+        Optional<Restaurante> restaurante = restauranteRepository.findById(id);
+        return getRestaurante(id, restaurante);
+    }
+
+    private Optional<Restaurante> getRestaurante(String id, Optional<Restaurante> restaurante) throws RestauranteInexistenteException {
+        if (restaurante.isEmpty())
+            throw new RestauranteInexistenteException(id);
+        return restaurante;
     }
 
     public boolean validaCNPJ(String cnpj) throws CNPJInvalidoException {
@@ -75,13 +83,18 @@ public class RestauranteService {
     }
 
     public void deletaRestaurante(String id) {
-        restauranteRepository.deleteById(id);
+        try {
+            restauranteRepository.deleteById(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public Optional<Restaurante> listaRestaurantePorCnpj(String cnpj) throws CNPJInvalidoException {
-        if (validaCNPJ(cnpj))
-            return restauranteRepository.findByCnpj(cnpj);
-        else
+    public Optional<Restaurante> listaRestaurantePorCnpj(String cnpj) throws CNPJInvalidoException, RestauranteInexistenteException {
+        if (validaCNPJ(cnpj)) {
+            Optional<Restaurante> restaurante = restauranteRepository.findByCnpj(cnpj);
+            return getRestaurante(cnpj, restaurante);
+        } else
             throw new CNPJInvalidoException(cnpj);
     }
 

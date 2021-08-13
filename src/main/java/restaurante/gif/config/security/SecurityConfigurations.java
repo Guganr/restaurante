@@ -37,10 +37,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
     protected void  configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 //endpoints permitidos sem autenticação
-                .antMatchers(HttpMethod.GET, "/restaurante").permitAll()
-                .antMatchers(HttpMethod.GET, "/restaurante/*").permitAll()
                 .antMatchers(HttpMethod.POST, "/auth/").permitAll()
-                .antMatchers(HttpMethod.GET, "/auth/").permitAll()
                 //Qualquer requisição necessita de autenticação
                 .anyRequest().authenticated()
                 //desativa a verificação do csrf
