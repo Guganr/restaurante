@@ -1,4 +1,4 @@
-package restaurante.gif.exceptions;
+package restaurante.gif.exceptions.errors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
