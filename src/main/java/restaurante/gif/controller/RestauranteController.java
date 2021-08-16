@@ -4,12 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import restaurante.gif.exceptions.RestauranteInexistenteException;
+import restaurante.gif.exceptions.EntidadeInexistenteException;
 import restaurante.gif.exceptions.errors.ApiError;
 import restaurante.gif.exceptions.CNPJInvalidoException;
-import restaurante.gif.exceptions.RestauranteCadastradoException;
+import restaurante.gif.exceptions.EntidadeCadastradaException;
 import restaurante.gif.model.Restaurante;
-import restaurante.gif.repository.RestauranteRepository;
 import restaurante.gif.exceptions.EmailInvalidoException;
 import restaurante.gif.service.RestauranteService;
 
@@ -31,11 +30,10 @@ public class RestauranteController {
     }
 
     @RequestMapping(method = POST)
-    @ExceptionHandler(CNPJInvalidoException.class)
     public ResponseEntity<Restaurante> salvaRestaurante(@RequestBody Restaurante restaurante)  {
         try {
             restauranteService.salvaRestaurante(restaurante);
-        } catch (CNPJInvalidoException | RestauranteCadastradoException | EmailInvalidoException exception) {
+        } catch (CNPJInvalidoException | EntidadeCadastradaException | EmailInvalidoException exception) {
             return new ResponseEntity(new ApiError(HttpStatus.CONFLICT, exception), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -46,7 +44,7 @@ public class RestauranteController {
     public ResponseEntity<Restaurante> listaRestaurantePorId(@PathVariable String id) {
         try {
             return new ResponseEntity(restauranteService.listaRestaurantePorId(id), HttpStatus.OK);
-        } catch (RestauranteInexistenteException exception) {
+        } catch (EntidadeInexistenteException exception) {
             return new ResponseEntity(new ApiError(HttpStatus.CONFLICT, exception), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -56,7 +54,7 @@ public class RestauranteController {
         try{
             return new ResponseEntity(restauranteService.listaRestaurantePorCnpj(cnpj), HttpStatus.OK);
         }
-        catch(CNPJInvalidoException | RestauranteInexistenteException exception ){
+        catch(CNPJInvalidoException | EntidadeInexistenteException exception ){
             return new ResponseEntity(new ApiError(HttpStatus.CONFLICT, exception), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

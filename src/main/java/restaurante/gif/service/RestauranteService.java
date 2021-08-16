@@ -9,20 +9,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import restaurante.gif.exceptions.CNPJInvalidoException;
 import restaurante.gif.exceptions.EmailInvalidoException;
-import restaurante.gif.exceptions.RestauranteCadastradoException;
-import restaurante.gif.exceptions.RestauranteInexistenteException;
+import restaurante.gif.exceptions.EntidadeCadastradaException;
+import restaurante.gif.exceptions.EntidadeInexistenteException;
 import restaurante.gif.model.Restaurante;
 import restaurante.gif.repository.RestauranteRepository;
+import restaurante.gif.service.commons.ServiceCommons;
 
 import java.util.Optional;
 
 @Service
-public class RestauranteService {
+public class RestauranteService extends ServiceCommons {
+
     @Autowired
     private RestauranteRepository restauranteRepository;
     private SafeguardException  SafeguardException;
 
-    public Restaurante salvaRestaurante(Restaurante restaurante) throws CNPJInvalidoException, RestauranteCadastradoException, EmailInvalidoException {
+    public Restaurante salvaRestaurante(Restaurante restaurante) throws CNPJInvalidoException, EntidadeCadastradaException, EmailInvalidoException {
         if (validaInformacoesDeCadastro(restaurante)) {
             restaurante.getId();
             restauranteRepository.save(restaurante);
@@ -30,15 +32,15 @@ public class RestauranteService {
         return restaurante;
     }
 
-    private boolean verificaSeRestauranteExiste(Restaurante restaurante) throws RestauranteCadastradoException {
+    private boolean verificaSeRestauranteExiste(Restaurante restaurante) throws EntidadeCadastradaException {
         Optional<Restaurante> restauranteCheck = restauranteRepository.findByCnpj(restaurante.getCnpj());
         if (restauranteCheck.isPresent())
-            throw new RestauranteCadastradoException(restaurante);
+            throw new EntidadeCadastradaException(restaurante);
         else
             return true;
     }
 
-    private boolean validaInformacoesDeCadastro(Restaurante restaurante) throws RestauranteCadastradoException, CNPJInvalidoException, EmailInvalidoException {
+    private boolean validaInformacoesDeCadastro(Restaurante restaurante) throws EntidadeCadastradaException, CNPJInvalidoException, EmailInvalidoException {
         return validaCNPJ(restaurante.getCnpj()) && verificaSeRestauranteExiste(restaurante) && validaEmail(restaurante.getEmail());
     }
 
@@ -49,15 +51,9 @@ public class RestauranteService {
             throw new EmailInvalidoException(email);
     }
 
-    public Optional<Restaurante> listaRestaurantePorId(String id) throws RestauranteInexistenteException {
+    public Optional<?> listaRestaurantePorId(String id) throws EntidadeInexistenteException {
         Optional<Restaurante> restaurante = restauranteRepository.findById(id);
-        return getRestaurante(id, restaurante);
-    }
-
-    private Optional<Restaurante> getRestaurante(String id, Optional<Restaurante> restaurante) throws RestauranteInexistenteException {
-        if (restaurante.isEmpty())
-            throw new RestauranteInexistenteException(id);
-        return restaurante;
+        return getEntidade(id, restaurante);
     }
 
     public boolean validaCNPJ(String cnpj) throws CNPJInvalidoException {
@@ -90,16 +86,12 @@ public class RestauranteService {
         }
     }
 
-    public Optional<Restaurante> listaRestaurantePorCnpj(String cnpj) throws CNPJInvalidoException, RestauranteInexistenteException {
+    public Optional<?> listaRestaurantePorCnpj(String cnpj) throws CNPJInvalidoException, EntidadeInexistenteException {
         if (validaCNPJ(cnpj)) {
             Optional<Restaurante> restaurante = restauranteRepository.findByCnpj(cnpj);
-            return getRestaurante(cnpj, restaurante);
+            return getEntidade(cnpj, restaurante);
         } else
             throw new CNPJInvalidoException(cnpj);
-    }
-
-    public Optional<Restaurante> listaRestaurantePorCnpje(String cnpj) {
-        return restauranteRepository.findByCnpj(cnpj);
     }
 
     public Iterable<Restaurante> findAll() {

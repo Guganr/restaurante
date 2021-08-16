@@ -38,6 +38,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 //endpoints permitidos sem autenticação
                 .antMatchers(HttpMethod.POST, "/auth/").permitAll()
+                .antMatchers(HttpMethod.POST, "/usuario/").permitAll()
                 //Qualquer requisição necessita de autenticação
                 .anyRequest().authenticated()
                 //desativa a verificação do csrf

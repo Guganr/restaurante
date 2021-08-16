@@ -1,10 +1,10 @@
 package restaurante.gif.exceptions;
 
-public class RestauranteInexistenteException extends Exception{
+public class EntidadeInexistenteException extends Exception{
 
     private String object;
 
-    public RestauranteInexistenteException(String object) {
+    public EntidadeInexistenteException(String object) {
         this.object = object;
     }
 

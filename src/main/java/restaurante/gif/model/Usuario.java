@@ -18,7 +18,6 @@ public class Usuario implements UserDetails {
     private String nome;
     private String email;
     private String senha;
-
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Perfil> perfis = new ArrayList<>();
 
@@ -54,9 +53,17 @@ public class Usuario implements UserDetails {
         this.senha = senha;
     }
 
+    public List<Perfil> getPerfis() {
+        return perfis;
+    }
+
+    public void setPerfis(List<Perfil> perfis) {
+        this.perfis = perfis;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return perfis;
     }
 
     @Override

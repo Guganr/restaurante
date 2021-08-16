@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,17 +16,13 @@ import restaurante.gif.model.Usuario;
 
 import java.util.Date;
 
+@Data
 @Service
 @Component
 @ConfigurationProperties(prefix="restaurantejwt")
 public class TokenService {
 
-    @Getter
-    @Setter
     private String expiration;
-
-    @Getter
-    @Setter
     private String secret;
 
     public String gerarToken(Authentication authentication) {
