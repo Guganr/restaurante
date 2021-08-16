@@ -22,7 +22,7 @@ public class Restaurante implements Serializable {
     private List<CategoriaComida> categoriaComida;
 
     public String getId() {
-        return nome.replace(" ", "_") + "_" + cnpj;
+        return this.id;
     }
 
     public void setId(String id) {

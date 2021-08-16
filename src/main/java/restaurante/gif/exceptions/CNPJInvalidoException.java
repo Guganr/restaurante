@@ -19,7 +19,7 @@ public class CNPJInvalidoException extends Exception {
 
     @Override
     public String getMessage() {
-        return cnpj + " inválido.";
+        return "O CNPJ: " + cnpj + "é inválido.";
     }
 
 

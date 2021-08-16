@@ -8,19 +8,23 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import restaurante.gif.exceptions.CNPJInvalidoException;
-import restaurante.gif.exceptions.RestauranteCadastradoException;
+import restaurante.gif.exceptions.EmailInvalidoException;
+import restaurante.gif.exceptions.EntidadeCadastradaException;
+import restaurante.gif.exceptions.EntidadeInexistenteException;
 import restaurante.gif.model.Restaurante;
 import restaurante.gif.repository.RestauranteRepository;
+import restaurante.gif.service.commons.ServiceCommons;
 
 import java.util.Optional;
 
 @Service
-public class RestauranteService {
+public class RestauranteService extends ServiceCommons {
+
     @Autowired
     private RestauranteRepository restauranteRepository;
     private SafeguardException  SafeguardException;
 
-    public Restaurante salvaRestaurante(Restaurante restaurante) throws CNPJInvalidoException, RestauranteCadastradoException {
+    public Restaurante salvaRestaurante(Restaurante restaurante) throws CNPJInvalidoException, EntidadeCadastradaException, EmailInvalidoException {
         if (validaInformacoesDeCadastro(restaurante)) {
             restaurante.getId();
             restauranteRepository.save(restaurante);
@@ -28,24 +32,28 @@ public class RestauranteService {
         return restaurante;
     }
 
-    private boolean verificaSeRestauranteExiste(Restaurante restaurante) throws RestauranteCadastradoException {
+    private boolean verificaSeRestauranteExiste(Restaurante restaurante) throws EntidadeCadastradaException {
         Optional<Restaurante> restauranteCheck = restauranteRepository.findByCnpj(restaurante.getCnpj());
         if (restauranteCheck.isPresent())
-            throw new RestauranteCadastradoException(restaurante);
+            throw new EntidadeCadastradaException(restaurante);
         else
             return true;
     }
 
-    private boolean validaInformacoesDeCadastro(Restaurante restaurante) throws RestauranteCadastradoException, CNPJInvalidoException {
+    private boolean validaInformacoesDeCadastro(Restaurante restaurante) throws EntidadeCadastradaException, CNPJInvalidoException, EmailInvalidoException {
         return validaCNPJ(restaurante.getCnpj()) && verificaSeRestauranteExiste(restaurante) && validaEmail(restaurante.getEmail());
     }
 
-    private boolean validaEmail(String email) {
-        return EmailValidator.getInstance().isValid(email);
+    private boolean validaEmail(String email) throws EmailInvalidoException {
+        if (EmailValidator.getInstance().isValid(email))
+            return true;
+        else
+            throw new EmailInvalidoException(email);
     }
 
-    public Optional<Restaurante> listaRestaurantePorId(String id) {
-        return restauranteRepository.findById(id);
+    public Optional<?> listaRestaurantePorId(String id) throws EntidadeInexistenteException {
+        Optional<Restaurante> restaurante = restauranteRepository.findById(id);
+        return getEntidade(id, restaurante);
     }
 
     public boolean validaCNPJ(String cnpj) throws CNPJInvalidoException {
@@ -71,17 +79,22 @@ public class RestauranteService {
     }
 
     public void deletaRestaurante(String id) {
-        restauranteRepository.deleteById(id);
+        try {
+            restauranteRepository.deleteById(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public Optional<Restaurante> listaRestaurantePorCnpj(String cnpj) throws CNPJInvalidoException {
-        if (validaCNPJ(cnpj))
-            return restauranteRepository.findByCnpj(cnpj);
-        else
+    public Optional<?> listaRestaurantePorCnpj(String cnpj) throws CNPJInvalidoException, EntidadeInexistenteException {
+        if (validaCNPJ(cnpj)) {
+            Optional<Restaurante> restaurante = restauranteRepository.findByCnpj(cnpj);
+            return getEntidade(cnpj, restaurante);
+        } else
             throw new CNPJInvalidoException(cnpj);
     }
 
-    public Optional<Restaurante> listaRestaurantePorCnpje(String cnpj) {
-        return restauranteRepository.findByCnpj(cnpj);
+    public Iterable<Restaurante> findAll() {
+        return restauranteRepository.findAll();
     }
 }

@@ -8,8 +8,6 @@ import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
-import restaurante.gif.exceptions.ApiValidationError;
-import restaurante.gif.exceptions.LowerCaseClassNameResolver;
 
 import javax.validation.ConstraintViolation;
 import java.time.LocalDateTime;

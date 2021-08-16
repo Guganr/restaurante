@@ -1,4 +1,4 @@
-package restaurante.gif.exceptions;
+package restaurante.gif.exceptions.errors;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase;
