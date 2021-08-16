@@ -67,7 +67,7 @@ public class UsuarioController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/privilegio/{id}")
     public ResponseEntity<Usuario> atualizaPrivilegioPorUsuario(@PathVariable String id,
                                                                     @RequestBody Usuario usuario) {
         Optional<Usuario> oldUsuario = usuarioService.atualizaPrivilegioPorUsuario(id, usuario);
@@ -77,7 +77,7 @@ public class UsuarioController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/senha/{id}")
     public ResponseEntity<Usuario> atualizaSenhaPorUsuario(@PathVariable String id,
                                                                     @RequestBody Usuario usuario) {
         Optional<Usuario> oldUsuario = usuarioService.atualizaSenhaPorUsuario(id, usuario);

@@ -69,6 +69,26 @@ public class RestauranteController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<Restaurante> atualizaEndederecoRestaurante(@PathVariable String id, @RequestBody Restaurante restaurante)
+    {
+        Optional<Restaurante> oldRestaurante = restauranteService.atualizaEndederecoRestaurante(id, restaurante);
+        if (oldRestaurante.isPresent())
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Restaurante> atualizaCategoriaRestaurante(@PathVariable String id, @RequestBody Restaurante restaurante)
+    {
+        Optional<Restaurante> oldRestaurante = restauranteService.atualizaCategoriaRestaurante(id, restaurante);
+        if (oldRestaurante.isPresent())
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Restaurante> deletaRestaurante(@PathVariable String id) {
         restauranteService.deletaRestaurante(id);

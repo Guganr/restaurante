@@ -73,6 +73,7 @@ public class RestauranteService extends ServiceCommons {
                     restaurante.setNome(newRestaurante.getNome());
                     restaurante.setCnpj(newRestaurante.getCnpj());
                     restaurante.setEndereco(newRestaurante.getEndereco());
+                    restaurante.setCategoriaComida(newRestaurante.getCategoriaComida());
                     return restauranteRepository.save(restaurante);
                 });
 
@@ -96,5 +97,20 @@ public class RestauranteService extends ServiceCommons {
 
     public Iterable<Restaurante> findAll() {
         return restauranteRepository.findAll();
+    }
+
+    public Optional<Restaurante> atualizaEndederecoRestaurante(String id, Restaurante newRestaurante) {
+        return restauranteRepository.findById(id)
+                .map(restaurante -> {
+                    restaurante.setEndereco(newRestaurante.getEndereco());
+                    return restauranteRepository.save(restaurante);
+                });
+    }
+    public Optional<Restaurante> atualizaCategoriaRestaurante(String id, Restaurante newRestaurante) {
+        return restauranteRepository.findById(id)
+                .map(restaurante -> {
+                    restaurante.setCategoriaComida(newRestaurante.getCategoriaComida());
+                    return restauranteRepository.save(restaurante);
+                });
     }
 }

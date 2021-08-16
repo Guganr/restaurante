@@ -16,8 +16,6 @@ public class Restaurante implements Serializable {
     private String nome;
     @Column(name = "cnpj")
     private String cnpj;
-    private String email;
-    private String senha;
     private String endereco;
     private List<CategoriaComida> categoriaComida;
 
@@ -43,22 +41,6 @@ public class Restaurante implements Serializable {
 
     public void setCnpj(String cnpj) {
         this.cnpj = cnpj;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
     }
 
     public String getEndereco() {
