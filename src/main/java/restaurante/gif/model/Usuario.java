@@ -20,6 +20,7 @@ public class Usuario implements UserDetails {
     private String senha;
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Perfil> perfis = new ArrayList<>();
+    private List<Integer> restaurantes;
 
     public String getId() {
         return id;
@@ -59,6 +60,14 @@ public class Usuario implements UserDetails {
 
     public void setPerfis(List<Perfil> perfis) {
         this.perfis = perfis;
+    }
+
+    public List<Integer> getRestaurantes() {
+        return restaurantes;
+    }
+
+    public void setRestaurantes(List<Integer> restaurantes) {
+        this.restaurantes = restaurantes;
     }
 
     @Override
