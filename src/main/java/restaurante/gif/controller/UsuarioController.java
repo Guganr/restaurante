@@ -8,7 +8,6 @@ import restaurante.gif.exceptions.EmailInvalidoException;
 import restaurante.gif.exceptions.EntidadeCadastradaException;
 import restaurante.gif.exceptions.EntidadeInexistenteException;
 import restaurante.gif.exceptions.errors.ApiError;
-import restaurante.gif.model.Restaurante;
 import restaurante.gif.model.Usuario;
 import restaurante.gif.service.UsuarioService;
 
@@ -29,7 +28,7 @@ public class UsuarioController {
     }
 
     @RequestMapping("/{id}")
-    public ResponseEntity<Restaurante> listaUsuarioPorId(@PathVariable String id) {
+    public ResponseEntity<Usuario> listaUsuarioPorId(@PathVariable String id) {
         try {
             return new ResponseEntity(usuarioService.listaUsuarioPorId(id), HttpStatus.OK);
         } catch (EntidadeInexistenteException exception) {
@@ -67,7 +66,7 @@ public class UsuarioController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/privilegio/{id}")
     public ResponseEntity<Usuario> atualizaPrivilegioPorUsuario(@PathVariable String id,
                                                                     @RequestBody Usuario usuario) {
         Optional<Usuario> oldUsuario = usuarioService.atualizaPrivilegioPorUsuario(id, usuario);
@@ -77,7 +76,7 @@ public class UsuarioController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/senha/{id}")
     public ResponseEntity<Usuario> atualizaSenhaPorUsuario(@PathVariable String id,
                                                                     @RequestBody Usuario usuario) {
         Optional<Usuario> oldUsuario = usuarioService.atualizaSenhaPorUsuario(id, usuario);

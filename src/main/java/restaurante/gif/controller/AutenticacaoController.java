@@ -26,9 +26,7 @@ public class AutenticacaoController {
 
     @PostMapping
     public ResponseEntity<Token> autenticar(@RequestBody @Valid LoginForm form) {
-        System.out.println(form.getEmail());
-        System.out.println(form.getSenha());
-        UsernamePasswordAuthenticationToken login = form.converter();
+        UsernamePasswordAuthenticationToken login = new UsernamePasswordAuthenticationToken(form.getEmail(), form.getSenha());
         try {
             Authentication authentication = authenticationManager.authenticate(login);
             String token = tokenService.gerarToken(authentication);

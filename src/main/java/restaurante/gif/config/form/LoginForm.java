@@ -1,7 +1,9 @@
 package restaurante.gif.config.form;
 
+import lombok.Data;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
+@Data
 public class LoginForm {
     private String email;
     private String senha;
@@ -22,7 +24,4 @@ public class LoginForm {
         this.senha = senha;
     }
 
-    public UsernamePasswordAuthenticationToken converter() {
-        return new UsernamePasswordAuthenticationToken(email, senha);
-    }
 }

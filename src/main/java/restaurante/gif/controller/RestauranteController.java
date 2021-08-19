@@ -34,7 +34,8 @@ public class RestauranteController {
         try {
             restauranteService.salvaRestaurante(restaurante);
         } catch (CNPJInvalidoException | EntidadeCadastradaException | EmailInvalidoException exception) {
-            return new ResponseEntity(new ApiError(HttpStatus.CONFLICT, exception), HttpStatus.INTERNAL_SERVER_ERROR);
+//            ResponseEntity.badRequest().body("cnpj invalido");
+            return new ResponseEntity(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, exception), HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
