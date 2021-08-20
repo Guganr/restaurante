@@ -13,12 +13,11 @@ import restaurante.gif.exceptions.EntidadeCadastradaException;
 import restaurante.gif.exceptions.EntidadeInexistenteException;
 import restaurante.gif.model.Restaurante;
 import restaurante.gif.repository.RestauranteRepository;
-import restaurante.gif.service.commons.ServiceCommons;
 
 import java.util.Optional;
 
 @Service
-public class RestauranteService extends ServiceCommons {
+public class RestauranteService {
 
     @Autowired
     private RestauranteRepository restauranteRepository;
@@ -40,6 +39,10 @@ public class RestauranteService extends ServiceCommons {
             return true;
     }
 
+    public boolean verificaSeRestauranteExisteTeste(Restaurante restaurante) throws EntidadeCadastradaException {
+            return verificaSeRestauranteExiste(restaurante);
+    }
+
     private boolean validaInformacoesDeCadastro(Restaurante restaurante) throws EntidadeCadastradaException, CNPJInvalidoException, EmailInvalidoException {
         return validaCNPJ(restaurante.getCnpj()) && verificaSeRestauranteExiste(restaurante) && validaEmail(restaurante.getEmail());
     }
@@ -51,7 +54,7 @@ public class RestauranteService extends ServiceCommons {
             throw new EmailInvalidoException(email);
     }
 
-    public Optional<?> listaRestaurantePorId(String id) throws EntidadeInexistenteException {
+    public Optional<Restaurante> listaRestaurantePorId(String id) throws EntidadeInexistenteException {
         Optional<Restaurante> restaurante = restauranteRepository.findById(id);
         return getEntidade(id, restaurante);
     }
@@ -86,7 +89,7 @@ public class RestauranteService extends ServiceCommons {
         }
     }
 
-    public Optional<?> listaRestaurantePorCnpj(String cnpj) throws CNPJInvalidoException, EntidadeInexistenteException {
+    public Optional<Restaurante> listaRestaurantePorCnpj(String cnpj) throws CNPJInvalidoException, EntidadeInexistenteException {
         if (validaCNPJ(cnpj)) {
             Optional<Restaurante> restaurante = restauranteRepository.findByCnpj(cnpj);
             return getEntidade(cnpj, restaurante);
@@ -96,5 +99,10 @@ public class RestauranteService extends ServiceCommons {
 
     public Iterable<Restaurante> findAll() {
         return restauranteRepository.findAll();
+    }
+    public Optional<Restaurante> getEntidade(String id, Optional<Restaurante> model) throws EntidadeInexistenteException {
+        if (model.isEmpty())
+            throw new EntidadeInexistenteException(id);
+        return model;
     }
 }

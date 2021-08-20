@@ -29,4 +29,8 @@ public class EntidadeCadastradaException extends Exception {
         return errors;
     }
 
+    @Override
+    public String getMessage() {
+        return "Restaurante" + model.toString() + " já foi cadastrado.";
+    }
 }
