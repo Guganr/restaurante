@@ -1,9 +1,6 @@
 package restaurante.gif.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -11,18 +8,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MockMvc;
 import restaurante.gif.exceptions.CNPJInvalidoException;
-import restaurante.gif.exceptions.EntidadeCadastradaException;
+import restaurante.gif.exceptions.RestauranteCadastradaException;
 import restaurante.gif.model.Restaurante;
 import restaurante.gif.repository.RestauranteRepository;
 
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 //@SpringBootTest
@@ -49,7 +41,7 @@ public class RestauranteServiceTest {
     }
 
     @Test
-    public void validaEntidadeCadastradaError() throws EntidadeCadastradaException {
+    public void validaEntidadeCadastradaError() throws RestauranteCadastradaException {
         Restaurante restaurante = new Restaurante();
         restaurante.setCnpj("21312312312");
         Optional<Restaurante> optionalRestaurante = Optional.of(restaurante);

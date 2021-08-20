@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import restaurante.gif.exceptions.CNPJInvalidoException;
 import restaurante.gif.exceptions.EmailInvalidoException;
-import restaurante.gif.exceptions.EntidadeCadastradaException;
-import restaurante.gif.exceptions.EntidadeInexistenteException;
+import restaurante.gif.exceptions.RestauranteCadastradaException;
+import restaurante.gif.exceptions.RestauranteInexistenteException;
 import restaurante.gif.model.Restaurante;
 import restaurante.gif.repository.RestauranteRepository;
 
@@ -21,9 +21,8 @@ public class RestauranteService {
 
     @Autowired
     private RestauranteRepository restauranteRepository;
-    private SafeguardException  SafeguardException;
 
-    public Restaurante salvaRestaurante(Restaurante restaurante) throws CNPJInvalidoException, EntidadeCadastradaException, EmailInvalidoException {
+    public Restaurante salvaRestaurante(Restaurante restaurante) {
         if (validaInformacoesDeCadastro(restaurante)) {
             restaurante.getId();
             restauranteRepository.save(restaurante);
@@ -31,35 +30,31 @@ public class RestauranteService {
         return restaurante;
     }
 
-    private boolean verificaSeRestauranteExiste(Restaurante restaurante) throws EntidadeCadastradaException {
+    private boolean verificaSeRestauranteExiste(Restaurante restaurante) {
         Optional<Restaurante> restauranteCheck = restauranteRepository.findByCnpj(restaurante.getCnpj());
         if (restauranteCheck.isPresent())
-            throw new EntidadeCadastradaException(restaurante);
+            throw new RestauranteCadastradaException(restaurante);
         else
             return true;
     }
 
-    public boolean verificaSeRestauranteExisteTeste(Restaurante restaurante) throws EntidadeCadastradaException {
-            return verificaSeRestauranteExiste(restaurante);
-    }
-
-    private boolean validaInformacoesDeCadastro(Restaurante restaurante) throws EntidadeCadastradaException, CNPJInvalidoException, EmailInvalidoException {
+    private boolean validaInformacoesDeCadastro(Restaurante restaurante) {
         return validaCNPJ(restaurante.getCnpj()) && verificaSeRestauranteExiste(restaurante) && validaEmail(restaurante.getEmail());
     }
 
-    private boolean validaEmail(String email) throws EmailInvalidoException {
+    private boolean validaEmail(String email) {
         if (EmailValidator.getInstance().isValid(email))
             return true;
         else
             throw new EmailInvalidoException(email);
     }
 
-    public Optional<Restaurante> listaRestaurantePorId(String id) throws EntidadeInexistenteException {
+    public Optional<Restaurante> listaRestaurantePorId(String id) {
         Optional<Restaurante> restaurante = restauranteRepository.findById(id);
-        return getEntidade(id, restaurante);
+        return getRestaurante(id, restaurante);
     }
 
-    public boolean validaCNPJ(String cnpj) throws CNPJInvalidoException {
+    public boolean validaCNPJ(String cnpj) {
         Check check = new SafeguardCheck();
         boolean validacao = check
                 .elementOf(cnpj, ParametroTipo.CNPJ)
@@ -89,10 +84,10 @@ public class RestauranteService {
         }
     }
 
-    public Optional<Restaurante> listaRestaurantePorCnpj(String cnpj) throws CNPJInvalidoException, EntidadeInexistenteException {
+    public Optional<Restaurante> listaRestaurantePorCnpj(String cnpj) {
         if (validaCNPJ(cnpj)) {
             Optional<Restaurante> restaurante = restauranteRepository.findByCnpj(cnpj);
-            return getEntidade(cnpj, restaurante);
+            return getRestaurante(cnpj, restaurante);
         } else
             throw new CNPJInvalidoException(cnpj);
     }
@@ -100,9 +95,10 @@ public class RestauranteService {
     public Iterable<Restaurante> findAll() {
         return restauranteRepository.findAll();
     }
-    public Optional<Restaurante> getEntidade(String id, Optional<Restaurante> model) throws EntidadeInexistenteException {
+
+    public Optional<Restaurante> getRestaurante(String id, Optional<Restaurante> model) {
         if (model.isEmpty())
-            throw new EntidadeInexistenteException(id);
+            throw new RestauranteInexistenteException(id);
         return model;
     }
 }

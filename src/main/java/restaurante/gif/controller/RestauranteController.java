@@ -4,12 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import restaurante.gif.exceptions.EntidadeInexistenteException;
-import restaurante.gif.exceptions.errors.ApiError;
-import restaurante.gif.exceptions.CNPJInvalidoException;
-import restaurante.gif.exceptions.EntidadeCadastradaException;
 import restaurante.gif.model.Restaurante;
-import restaurante.gif.exceptions.EmailInvalidoException;
 import restaurante.gif.service.RestauranteService;
 
 import java.util.Optional;
@@ -31,33 +26,19 @@ public class RestauranteController {
 
     @RequestMapping(method = POST)
     public ResponseEntity<Restaurante> salvaRestaurante(@RequestBody Restaurante restaurante)  {
-        try {
-            restauranteService.salvaRestaurante(restaurante);
-        } catch (CNPJInvalidoException | EntidadeCadastradaException | EmailInvalidoException exception) {
-//            ResponseEntity.badRequest().body("cnpj invalido");
-            return new ResponseEntity(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, exception), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        restauranteService.salvaRestaurante(restaurante);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 
     @RequestMapping("/{id}")
     public ResponseEntity<Restaurante> listaRestaurantePorId(@PathVariable String id) {
-        try {
-            return new ResponseEntity(restauranteService.listaRestaurantePorId(id), HttpStatus.OK);
-        } catch (EntidadeInexistenteException exception) {
-            return new ResponseEntity(new ApiError(HttpStatus.CONFLICT, exception), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity(restauranteService.listaRestaurantePorId(id), HttpStatus.OK);
     }
 
     @RequestMapping("/cnpj/{cnpj}")
     public ResponseEntity<Restaurante> listaRestaurantePorCnpj(@PathVariable String cnpj) {
-        try{
-            return new ResponseEntity(restauranteService.listaRestaurantePorCnpj(cnpj), HttpStatus.OK);
-        }
-        catch(CNPJInvalidoException | EntidadeInexistenteException exception ){
-            return new ResponseEntity(new ApiError(HttpStatus.CONFLICT, exception), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity(restauranteService.listaRestaurantePorCnpj(cnpj), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

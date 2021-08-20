@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-public class CNPJInvalidoException extends Exception {
+public class CNPJInvalidoException extends RuntimeException {
     private String cnpj;
 
     public static CNPJInvalidoException createWith(String cnpj) {

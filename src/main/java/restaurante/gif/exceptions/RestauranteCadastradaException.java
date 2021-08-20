@@ -1,27 +1,24 @@
 package restaurante.gif.exceptions;
 
-import org.springframework.ui.Model;
 import org.springframework.validation.ObjectError;
-import restaurante.gif.model.Restaurante;
 
-import javax.persistence.Entity;
 import java.io.Serializable;
 import java.util.List;
 
-public class EntidadeCadastradaException extends Exception {
+public class RestauranteCadastradaException extends RuntimeException {
 
     private Serializable model;
     private List<ObjectError> errors;
 
-    public static EntidadeCadastradaException createWith(List<ObjectError> errors) {
-        return new EntidadeCadastradaException(errors);
+    public static RestauranteCadastradaException createWith(List<ObjectError> errors) {
+        return new RestauranteCadastradaException(errors);
     }
 
-    public EntidadeCadastradaException(Serializable model) {
+    public RestauranteCadastradaException(Serializable model) {
         this.model = model;
     }
 
-    private EntidadeCadastradaException(List<ObjectError> errors) {
+    private RestauranteCadastradaException(List<ObjectError> errors) {
         this.errors = errors;
     }
 
