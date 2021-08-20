@@ -47,7 +47,7 @@ public class RestauranteServiceTest {
         Optional<Restaurante> optionalRestaurante = Optional.of(restaurante);
 //        when(restauranteRepository.findByCnpj(anyString())).thenReturn(optionalRestaurante);
         doReturn(optionalRestaurante).when(restauranteRepository).findByCnpj(restaurante.getCnpj());
-        restauranteService.verificaSeRestauranteExisteTeste(restaurante);
+//        restauranteService.verificaSeRestauranteExisteTeste(restaurante);
 //        Assert.assertFalse(this.restauranteService.verificaSeRestauranteExisteTeste(restaurante));
     }
 

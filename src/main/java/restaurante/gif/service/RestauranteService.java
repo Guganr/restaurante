@@ -1,7 +1,6 @@
 package restaurante.gif.service;
 
 import br.com.safeguard.check.SafeguardCheck;
-import br.com.safeguard.exceptions.SafeguardException;
 import br.com.safeguard.interfaces.Check;
 import br.com.safeguard.types.ParametroTipo;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -14,6 +13,7 @@ import restaurante.gif.exceptions.RestauranteInexistenteException;
 import restaurante.gif.model.Restaurante;
 import restaurante.gif.repository.RestauranteRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,7 +24,6 @@ public class RestauranteService {
 
     public Restaurante salvaRestaurante(Restaurante restaurante) {
         if (validaInformacoesDeCadastro(restaurante)) {
-            restaurante.getId();
             restauranteRepository.save(restaurante);
         }
         return restaurante;
@@ -65,23 +64,19 @@ public class RestauranteService {
         return true;
     }
 
-    public Optional<Restaurante> atualizaRestaurantePorId(String id, Restaurante newRestaurante) {
+    public Optional<Restaurante> atualizaRestaurantePorId(String id, Restaurante novoRestaurante) {
         return restauranteRepository.findById(id)
                 .map(restaurante -> {
-                    restaurante.setNome(newRestaurante.getNome());
-                    restaurante.setCnpj(newRestaurante.getCnpj());
-                    restaurante.setEndereco(newRestaurante.getEndereco());
+                    restaurante.setNome(novoRestaurante.getNome());
+                    restaurante.setCnpj(novoRestaurante.getCnpj());
+                    restaurante.setEndereco(novoRestaurante.getEndereco());
                     return restauranteRepository.save(restaurante);
                 });
 
     }
 
     public void deletaRestaurante(String id) {
-        try {
-            restauranteRepository.deleteById(id);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        restauranteRepository.deleteById(id);
     }
 
     public Optional<Restaurante> listaRestaurantePorCnpj(String cnpj) {
@@ -92,7 +87,7 @@ public class RestauranteService {
             throw new CNPJInvalidoException(cnpj);
     }
 
-    public Iterable<Restaurante> findAll() {
+    public List<Restaurante> findAll() {
         return restauranteRepository.findAll();
     }
 

@@ -10,6 +10,6 @@ public class RestauranteInexistenteException extends RuntimeException{
 
     @Override
     public String getMessage() {
-        return "Restaurante" + object + " não encontrado.";
+        return "Restaurante " + object + " não encontrado.";
     }
 }
