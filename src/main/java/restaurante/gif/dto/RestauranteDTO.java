@@ -4,6 +4,7 @@ import lombok.Data;
 import restaurante.gif.model.CategoriaComida;
 import restaurante.gif.model.Restaurante;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data

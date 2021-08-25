@@ -1,21 +1,24 @@
 package restaurante.gif.exceptions;
 
 import org.springframework.validation.ObjectError;
+import restaurante.gif.model.Restaurante;
 
 import java.io.Serializable;
 import java.util.List;
 
 public class RestauranteCadastradaException extends RuntimeException {
 
-    private Serializable model;
+    private Restaurante restaurante;
     private List<ObjectError> errors;
 
     public static RestauranteCadastradaException createWith(List<ObjectError> errors) {
         return new RestauranteCadastradaException(errors);
     }
 
-    public RestauranteCadastradaException(Serializable model) {
-        this.model = model;
+    public RestauranteCadastradaException() {}
+
+    public RestauranteCadastradaException(Restaurante restaurante) {
+        this.restaurante = restaurante;
     }
 
     private RestauranteCadastradaException(List<ObjectError> errors) {
@@ -28,6 +31,6 @@ public class RestauranteCadastradaException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return "Restaurante" + model.toString() + " já foi cadastrado.";
+        return "Restaurante " + restaurante.getNome() + " já foi cadastrado.";
     }
 }

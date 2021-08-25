@@ -13,6 +13,8 @@ public class CNPJInvalidoException extends RuntimeException {
         return new CNPJInvalidoException(cnpj);
     }
 
+    public CNPJInvalidoException() {}
+
     public CNPJInvalidoException(String cnpj) {
         this.cnpj = cnpj;
     }

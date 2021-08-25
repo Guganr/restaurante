@@ -5,10 +5,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import restaurante.gif.exceptions.errors.ApiError;
-import restaurante.gif.model.Restaurante;
 
 @ControllerAdvice
 public class GlobalControllerExceptionHandler {
+
+    @ExceptionHandler(EmailInvalidoException.class)
+    public ResponseEntity<ApiError> handleEmailInvalidoException(EmailInvalidoException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setStatus(HttpStatus.BAD_REQUEST);
+        apiError.setMessage(ex.getMessage());
+        return new ResponseEntity<ApiError>(apiError, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(CNPJInvalidoException.class)
     public ResponseEntity<ApiError> handleCNPJInvalidoException(CNPJInvalidoException ex) {

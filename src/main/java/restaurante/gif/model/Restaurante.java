@@ -21,5 +21,20 @@ public class Restaurante implements Serializable {
     private String endereco;
     private List<CategoriaComida> categoriaComida;
 
+
+    public Restaurante() {}
+    public Restaurante(String nome, String cnpj) {
+        this.nome = nome;
+        this.cnpj = cnpj;
+    }
+
+    public Restaurante(String nome, String cnpj, String email, String endereco, List<CategoriaComida> categoriaComida) {
+        this.nome = nome;
+        this.cnpj = cnpj;
+        this.email = email;
+        this.endereco = endereco;
+        this.categoriaComida = categoriaComida;
+
+    }
 }
 

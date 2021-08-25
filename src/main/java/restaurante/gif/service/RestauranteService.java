@@ -29,7 +29,7 @@ public class RestauranteService {
         return restaurante;
     }
 
-    private boolean verificaSeRestauranteExiste(Restaurante restaurante) {
+    public boolean verificaSeRestauranteExiste(Restaurante restaurante) {
         Optional<Restaurante> restauranteCheck = restauranteRepository.findByCnpj(restaurante.getCnpj());
         if (restauranteCheck.isPresent())
             throw new RestauranteCadastradaException(restaurante);
@@ -41,7 +41,7 @@ public class RestauranteService {
         return validaCNPJ(restaurante.getCnpj()) && verificaSeRestauranteExiste(restaurante) && validaEmail(restaurante.getEmail());
     }
 
-    private boolean validaEmail(String email) {
+    public boolean validaEmail(String email) {
         if (EmailValidator.getInstance().isValid(email))
             return true;
         else
@@ -53,7 +53,7 @@ public class RestauranteService {
         return getRestaurante(id, restaurante);
     }
 
-    public boolean validaCNPJ(String cnpj) {
+    private boolean validaCNPJ(String cnpj) {
         Check check = new SafeguardCheck();
         boolean validacao = check
                 .elementOf(cnpj, ParametroTipo.CNPJ)
@@ -65,10 +65,20 @@ public class RestauranteService {
     }
 
     public Optional<Restaurante> atualizaRestaurantePorId(String id, Restaurante novoRestaurante) {
+        if (novoRestaurante.getCnpj() != null)
+            validaCNPJ(novoRestaurante.getCnpj());
+        if (novoRestaurante.getEmail() != null)
+            validaEmail(novoRestaurante.getEmail());
+
         return restauranteRepository.findById(id)
                 .map(restaurante -> {
-                    restaurante.setNome(novoRestaurante.getNome());
+                    if (novoRestaurante.getNome() != null)
+                        restaurante.setNome(novoRestaurante.getNome());
+                    if (novoRestaurante.getCnpj() != null)
                     restaurante.setCnpj(novoRestaurante.getCnpj());
+                    if (novoRestaurante.getEmail() != null)
+                    restaurante.setEmail(novoRestaurante.getEmail());
+                    if (novoRestaurante.getEndereco() != null)
                     restaurante.setEndereco(novoRestaurante.getEndereco());
                     return restauranteRepository.save(restaurante);
                 });

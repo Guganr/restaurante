@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface RestauranteRepository extends MongoRepository<Restaurante, String> {
 
     List<Restaurante> findByNomeContaining(String nome);
-    Optional<Restaurante> findByCnpj(String cnpj);
+    public Optional<Restaurante> findByCnpj(String cnpj);
     List<Restaurante> findByEmailContaining(String email);
 
 }

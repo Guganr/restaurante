@@ -40,16 +40,17 @@ public class RestauranteController {
     }
 
 
-    @RequestMapping("/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<RestauranteDTO> listaRestaurantePorId(@PathVariable String id) {
-        return restauranteService.listaRestaurantePorId(id)
+        Optional<Restaurante> optionalRestaurante = restauranteService.listaRestaurantePorId(id);
+        return optionalRestaurante
                 .map(restaurante -> new ResponseEntity(converterParaDTO(restaurante), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity(HttpStatus.NOT_FOUND));
     }
 
-    @RequestMapping("/cnpj/{cnpj}")
+    @GetMapping("/cnpj/{cnpj}")
     public ResponseEntity<Restaurante> listaRestaurantePorCnpj(@PathVariable String cnpj) {
-        restauranteService.listaRestaurantePorCnpj(cnpj)
+        return restauranteService.listaRestaurantePorCnpj(cnpj)
                 .map(restaurante -> new ResponseEntity(converterParaDTO(restaurante), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity(HttpStatus.NOT_FOUND));
     }
