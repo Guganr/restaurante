@@ -21,7 +21,7 @@ public class CNPJInvalidoException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return "O CNPJ: " + cnpj + "é inválido.";
+        return "O CNPJ: " + cnpj + " é inválido.";
     }
 
 
