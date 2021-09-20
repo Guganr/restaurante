@@ -1,40 +1,75 @@
 package restaurante.gif.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MockMvc;
-import restaurante.gif.exceptions.CNPJInvalidoException;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
+import restaurante.gif.exceptions.EmailInvalidoException;
+import restaurante.gif.exceptions.RestauranteCadastradaException;
+import restaurante.gif.exceptions.RestauranteInexistenteException;
+import restaurante.gif.model.Restaurante;
+import restaurante.gif.repository.RestauranteRepository;
 
-import static org.mockito.Mockito.mock;
+import java.util.Optional;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+@RunWith(MockitoJUnitRunner.class)
 public class RestauranteServiceTest {
 
-    @Autowired
-    private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
+    @InjectMocks
     private RestauranteService restauranteService;
+    @Mock
+    private RestauranteRepository restauranteRepository;
 
     @Before
     public void setUp(){
-        this.restauranteService = mock(RestauranteService.class);
+        MockitoAnnotations.initMocks(this);
     }
 
 
-    public void validaCNPJError() throws CNPJInvalidoException {
-        Assert.assertFalse(this.restauranteService.validaCNPJ("452125413294212"));
+    @Test(expected = EmailInvalidoException.class)
+    public void validaEmailErro() {
+        String emailInvalido = "aaabbbccc";
+        assertFalse(restauranteService.validaEmail(emailInvalido));
     }
 
+    @Test
+    public void validaEmailSucesso() {
+        String emailValido = "aaa@gmail.com";
+        assertTrue(restauranteService.validaEmail(emailValido));
+    }
+
+    @Test(expected = RestauranteCadastradaException.class)
+    public void validaEntidadeCadastradaSucesso() {
+        Restaurante restaurante = new Restaurante();
+        restaurante.setCnpj("21312312312");
+        Optional<Restaurante> optionalRestaurante = Optional.of(new Restaurante("NOME", "CNPJ12345") );
+        doReturn(optionalRestaurante).when(restauranteRepository).findByCnpj(restaurante.getCnpj());
+        when(restauranteService.verificaSeRestauranteExiste(restaurante)).thenReturn(false);
+    }
+
+    @Test
+    public void validaEntidadeCadastradaErro() {
+        Restaurante restaurante =  mock(Restaurante.class);
+        assertTrue(this.restauranteService.verificaSeRestauranteExiste(restaurante));
+    }
+
+    @Test
+    public void getEntidadeSucesso() {
+        Restaurante restaurante = mock(Restaurante.class);
+        Optional<Restaurante> optionalRestaurante = Optional.ofNullable(restaurante);
+        assertEquals(restaurante, restauranteService.getRestaurante("1", optionalRestaurante).get());
+    }
+
+    @Test(expected = RestauranteInexistenteException.class)
+    public void getEntidadeErro() {
+        restauranteService.getRestaurante("1", Optional.empty());
+    }
 
 }

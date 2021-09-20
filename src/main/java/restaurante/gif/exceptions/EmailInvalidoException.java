@@ -1,6 +1,6 @@
 package restaurante.gif.exceptions;
 
-public class EmailInvalidoException extends Exception {
+public class EmailInvalidoException extends RuntimeException {
 
     private String email;
 

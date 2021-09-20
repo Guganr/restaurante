@@ -28,7 +28,7 @@ class ApiError {
     private String debugMessage;
     private List<ApiSubError> subErrors;
 
-    private ApiError() {
+    public ApiError() {
         timestamp = LocalDateTime.now();
     }
 

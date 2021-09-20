@@ -6,12 +6,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-public class CNPJInvalidoException extends Exception {
+public class CNPJInvalidoException extends RuntimeException {
     private String cnpj;
 
     public static CNPJInvalidoException createWith(String cnpj) {
         return new CNPJInvalidoException(cnpj);
     }
+
+    public CNPJInvalidoException() {}
 
     public CNPJInvalidoException(String cnpj) {
         this.cnpj = cnpj;
@@ -19,7 +21,7 @@ public class CNPJInvalidoException extends Exception {
 
     @Override
     public String getMessage() {
-        return "O CNPJ: " + cnpj + "é inválido.";
+        return "O CNPJ: " + cnpj + " é inválido.";
     }
 
 

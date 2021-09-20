@@ -1,73 +1,66 @@
 package restaurante.gif.controller;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import restaurante.gif.exceptions.EntidadeInexistenteException;
-import restaurante.gif.exceptions.errors.ApiError;
-import restaurante.gif.exceptions.CNPJInvalidoException;
-import restaurante.gif.exceptions.EntidadeCadastradaException;
+import restaurante.gif.dto.RestauranteDTO;
 import restaurante.gif.model.Restaurante;
-import restaurante.gif.exceptions.EmailInvalidoException;
 import restaurante.gif.service.RestauranteService;
 
+import java.util.List;
 import java.util.Optional;
-
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("restaurante")
 public class RestauranteController {
 
     @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
     private RestauranteService restauranteService;
 
-    @RequestMapping(method = GET)
-    public Iterable<Restaurante> listarRestaurantes() {
-        return restauranteService.findAll();
+    @GetMapping()
+    public List<RestauranteDTO> listarRestaurantes() {
+        List<Restaurante> restaurantes = restauranteService.findAll();
+        return restaurantes
+                .stream()
+                .map(this::converterParaDTO)
+                .collect(Collectors.toList());
     }
 
-    @RequestMapping(method = POST)
-    public ResponseEntity<Restaurante> salvaRestaurante(@RequestBody Restaurante restaurante)  {
-        try {
-            restauranteService.salvaRestaurante(restaurante);
-        } catch (CNPJInvalidoException | EntidadeCadastradaException | EmailInvalidoException exception) {
-//            ResponseEntity.badRequest().body("cnpj invalido");
-            return new ResponseEntity(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, exception), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    @PostMapping()
+    public ResponseEntity<RestauranteDTO> salvaRestaurante(@RequestBody RestauranteDTO restauranteDTO)  {
+        Restaurante restaurante = converterParaEntity(restauranteDTO);
+        Restaurante novoRestaurante = restauranteService.salvaRestaurante(restaurante);
+        return new ResponseEntity<>(converterParaDTO(novoRestaurante), HttpStatus.CREATED);
     }
 
 
-    @RequestMapping("/{id}")
-    public ResponseEntity<Restaurante> listaRestaurantePorId(@PathVariable String id) {
-        try {
-            return new ResponseEntity(restauranteService.listaRestaurantePorId(id), HttpStatus.OK);
-        } catch (EntidadeInexistenteException exception) {
-            return new ResponseEntity(new ApiError(HttpStatus.CONFLICT, exception), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @GetMapping("/{id}")
+    public ResponseEntity<RestauranteDTO> listaRestaurantePorId(@PathVariable String id) {
+        Optional<Restaurante> optionalRestaurante = restauranteService.listaRestaurantePorId(id);
+        return optionalRestaurante
+                .map(restaurante -> new ResponseEntity(converterParaDTO(restaurante), HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity(HttpStatus.NOT_FOUND));
     }
 
-    @RequestMapping("/cnpj/{cnpj}")
+    @GetMapping("/cnpj/{cnpj}")
     public ResponseEntity<Restaurante> listaRestaurantePorCnpj(@PathVariable String cnpj) {
-        try{
-            return new ResponseEntity(restauranteService.listaRestaurantePorCnpj(cnpj), HttpStatus.OK);
-        }
-        catch(CNPJInvalidoException | EntidadeInexistenteException exception ){
-            return new ResponseEntity(new ApiError(HttpStatus.CONFLICT, exception), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return restauranteService.listaRestaurantePorCnpj(cnpj)
+                .map(restaurante -> new ResponseEntity(converterParaDTO(restaurante), HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity(HttpStatus.NOT_FOUND));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Restaurante> editaRestaurante(@PathVariable String id, @RequestBody Restaurante restaurante)
+    public ResponseEntity<RestauranteDTO> editaRestaurante(@PathVariable String id, @RequestBody RestauranteDTO restauranteDTO)
     {
-        Optional<Restaurante> oldRestaurante = restauranteService.atualizaRestaurantePorId(id, restaurante);
-        if (oldRestaurante.isPresent())
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Restaurante restaurante = converterParaEntity(restauranteDTO);
+        Optional<Restaurante> novoRestaurante = restauranteService.atualizaRestaurantePorId(id, restaurante);
+        return new ResponseEntity<>(converterParaDTO(novoRestaurante.get()), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
@@ -76,4 +69,17 @@ public class RestauranteController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    public RestauranteDTO converterParaDTO(Restaurante restaurante) {
+        return modelMapper.map(restaurante, RestauranteDTO.class);
+    }
+
+    public Restaurante converterParaEntity(RestauranteDTO restauranteDTO) {
+        Restaurante restaurante = modelMapper.map(restauranteDTO, Restaurante.class);
+        if (restaurante.getId() != null) {
+            Optional<Restaurante> optionalRestaurante = restauranteService.listaRestaurantePorId(restaurante.getId());
+            if (optionalRestaurante.isPresent())
+                return optionalRestaurante.get();
+        }
+        return restaurante;
+    }
 }
